@@ -1991,6 +1991,165 @@ items类型的结构如下:
 * response: 
 返回结果为[2.4](#24-单笔订单回执查询) 中orderResultDto，重点关注其payStatus和paymentDatetime即可。
 
+### 12. 一件代发支付推单
+#### 12.1 创建订单并触发一件代发支付
+
+调用方式详情:
+
+* url: {api\_url}/order/createAndTransferPay
+* method: POST
+* request: Body parameter (application/json)
+
+请传入一个单个的order类型对象，order类型的结构如下
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 是否需要自动申报至海关 | needDeclare | Boolean | 否 | true | 是否在支付成功后自动进行报关。若不设置该订单是否需要申报海关，则将按照商户在入网时的业务形态决定是否进行申报。若设置为false但之后需申报，可后置调用[8.1 支付信息海关推单](#81-支付信息海关推单)  |
+| 货币代码 | currency | String | 是 | "CNY" | 请固定为CNY |
+| 需申报的电子口岸代码 | customsCode | String | 否 | "HG016" | 若需申报则为必填, 参见附录[A.6](#a6-海关及电子口岸代码) |
+| 海关关区代码| customsAreaCode | String | 否 | "5130" | 若需申报且申报海关为广州海关时必填 |
+| 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
+| 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
+| 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
+| 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
+| 订购人姓名 | payerName | String | 否 | "张三" | 若需申报则必填 |
+| 订购人身份证号 | payerNumber | String | 否 | "310113198010101234" | 若需申报则必填|
+| 订购人电话 | payerPhone | String | 否 | "18512001234" | 若需申报则必填 |
+| 订单额度 | paymentAmount | Long | 是 | 4023 | 请务必注意单位为分 |
+| 订单内主要商品信息 | subject | String | 是 | "XXXX化妆品" | 长度不超过200个字符 |
+| 接收支付异步通知url | notifyUrl | String | 否 | | 本字段可不填，若不填写，异步通知将发送至本文档第三章[3. 接收异步通知](#3-接收异步通知)在商户后台所填写的商户级别的异步通知url中。若本字段填写则以本字段填写内容为准。消息体会进行签名，签名方式参考第三章。 |
+| 订单内商品列表 | items | items类型数组 | 否 | | 可空 |
+
+items类型的结构如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+| 商品名称 | subject | String | 是 | "XXXX口红" | 长度不超过200个字符  |
+| 商品链接 | itemLink | String | 是 | "http://www.baidu.com" |  |
+| 货号 | articleNum | String | 否 | "WO11111" |  |
+
+* request example:
+
+~~~
+{
+    "needDeclare": true,
+    "currency": "CNY",
+    "customsCode": "HG022",
+    "customsAreaCode": "5130",
+    "customsJyOrg": "440009",
+    "customsInType": "2",
+    "items": [
+      {
+        "articleNum": "HH00001",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品1"
+      },
+       {
+        "articleNum": "HH00002",
+        "itemLink": "http://www.baidu.com",
+        "subject": "测试商品2"
+      }
+    ],
+    "mchtOrderNo": "F20190402123",
+    "orderDatetime": "2019-04-02 11:11:46",
+    "payerName": "张三",
+    "payerNumber": "310113198010101234",
+    "payerPhone": "13800138000",
+    "paymentAmount": 4023,
+    "subject": "测试商品1"
+  }
+~~~
+
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "mchtOrderNo": "F20190402123"
+    }
+}
+~~~
+
+#### 12.2 重新进行一件代发支付
+
+本章节与[2.7 单笔订单请求重新安排支付](#27-单笔订单请求重新安排支付)完全一致，若客户已对接过，可直接跳过本节。通过本接口，可对支付失败的一件代发支付订单重新发起支付请求。
+
+* url: {api\_url}/order/arrangePay?mchtOrderNo={mchtOrderNo}
+* method: GET
+* request: Query Params为商户订单号mchtOrderNo
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | 1904052344  |  |
+
+
+* response: 
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": "订单进入支付队列成功"
+}
+~~~
+
+#### 12.3 订单查询
+
+可以主动查询订单的支付结果信息。
+
+* url: {api\_url}/order/queryOrder?mchtOrderNo={mchtOrderNo}
+* method: GET
+* request: Query Params
+
+|字段名称|参数| 是否必填 |例子|说明|
+|:--|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo | 是 | 1904052344  |  |
+
+* response: 
+返回结果为[2.4](#24-单笔订单回执查询) 中orderResultDto，重点关注其payStatus和paymentDatetime。
+
+#### 12.4 订单批次触发一件代发支付 ####
+本章和[2.2 订单批次触发支付](#22-订单批次触发支付)的内容基本一致，唯一区别为所调用的api url略有微小不同，前期使用2.2的用户可以快速切换为一件代发支付的批次触发接口。
+
+调用本接口对本批次内的订单进行支付与推关。本接口同步返回成功只表明系统接收到整个批次开始支付的指令，支付完成时间取决于协商的合作模式等其他因素。在发送支付指令成功之后，可以进行10分钟/次的订单批次支付&推送结果轮询。
+
+* url: {api\_url}/orderBatch/{orderBatchId}/transferPay
+* method: GET
+* request Path Variable: url路径参数为创建该订单批次时返回的{orderBatchId}
+
+* response: success参数返回为true时即表示系统已成功安排本批次支付任务
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+       “分配任务完成”
+    }
+}
+~~~
+
+* 错误代码: 若success为false，可能出现的errorCode和其对应解释如下
+
+|errorCode|errorMsg| 备注|
+|:--|:--|:--|
+|50054| 没有需要被分配执行的订单 | 
+
+订单批次中的每一笔订单在支付最终成功或失败后，会发送支付状态通知至商户配置的服务器，后续每一笔订单最终申报完成或失败也将发送申报状态通知至商户配置的服务器，参见[3 接收异步通知](#3-接收异步通知)。
+
+---
+
+
 ## 附录A
 
 ### A.1 支付状态
@@ -2025,6 +2184,7 @@ items类型的结构如下:
 |ALLINPAY| 通联支付 | [图标url](http://www.allinpay.com/images/logo1.png) |
 |EASYPAY | 易生支付 | [图标url](http://www.bhecard.com/images_new/logo.jpg)|
 |LYCHEEPAY| 快付通 | [图标url](https://www.kftpay.com.cn/templets/kuaifutong/images/img_logo.png)|
+|SUMPAY| 商盟支付(统统付) | [图标url](https://www.sumpay.cn/portal/rec/public/img/LOGO-TTP.png) |
 
 ### A.5 银行代码
 |银行代码|银行名称|单日上限|
