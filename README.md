@@ -1,7 +1,7 @@
 <h1>QuickPay API文档</h1>
 
 <!--ts-->
-   * [Payzero QuickPay API文档](#payzero-quickpay-api文档)
+   * [QuickPay API文档](#quickpay-api文档)
       * [技术综述](#技术综述)
          * [请求格式说明](#请求格式说明)
          * [返回格式说明](#返回格式说明)
@@ -68,7 +68,7 @@
       * [附录B](#附录b)
          * [B.1 银行卡绑定流程说明](#b1-银行卡绑定流程说明)
 
-<!-- Added by: raphael, at: Mon Nov 25 15:34:59 CST 2019 -->
+<!-- Added by: raphael, at: Tue Jun 30 11:49:56 CST 2020 -->
 
 <!--te-->
 
@@ -155,8 +155,8 @@ Authorization: Bearer 获取到的token
 4. 陆续添加中
 
 ~~~
-git clone https://github.com/iyuta-cn/quickpay-api-doc
-cd quickpay-api-doc
+git clone https://github.com/iyuta-cn/iyuta-quickpay-api-doc
+cd iyuta-quickpay-api-doc
 
 # 进入项目置换application-test.yml文件中的username和password
 # 为系统分配的测试账户密码
