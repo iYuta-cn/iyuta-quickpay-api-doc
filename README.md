@@ -1,7 +1,7 @@
-<h1>QuickPay API文档</h1>
+<h1>Xpay API文档</h1>
 
 <!--ts-->
-   * [QuickPay API文档](#quickpay-api文档)
+   * [Xpay API文档](#xpay-api文档)
       * [技术综述](#技术综述)
          * [请求格式说明](#请求格式说明)
          * [返回格式说明](#返回格式说明)
@@ -73,7 +73,7 @@
       * [附录B](#附录b)
          * [B.1 银行卡绑定流程说明](#b1-银行卡绑定流程说明)
 
-<!-- Added by: raphael, at: Tue Jun 30 12:01:29 CST 2020 -->
+<!-- Added by: raphael, at: Wed Jul  1 13:47:28 CST 2020 -->
 
 <!--te-->
 
@@ -81,7 +81,7 @@
 ## 技术综述
 
 ### 请求格式说明
-QuickPay API整体采用RESTful API的风格，以application/json格式进行数据的传递。
+Xpay API整体采用RESTful API的风格，以application/json格式进行数据的传递。
 本文档中所有的HTTP方法（无论其是GET/POST/DELETE/PUT或任何其他方法），其HTTP HEADER中必须加入OAuth2风格的Http header属性:
 
 ~~~
@@ -92,7 +92,7 @@ Authorization: Bearer 获取到的token
 
 ![](doc/postman_header.png)
 
-获取到的token为Quickpay系统用于验证调用方身份的JWT风格的token, 该token的获得是通过使用系统分配的APP Id和APP Key并调用登录接口。其有效时间为<b>4小时</b>，且JWT本身包含了过期的时间的信息。关于JWT token，可参考 <https://jwt.io/>。若需要重新生成新token，只需再次调用登录接口获取token即可，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
+获取到的token为Xpay系统用于验证调用方身份的JWT风格的token, 该token的获得是通过使用系统分配的APP Id和APP Key并调用登录接口。其有效时间为<b>4小时</b>，且JWT本身包含了过期的时间的信息。关于JWT token，可参考 <https://jwt.io/>。若需要重新生成新token，只需再次调用登录接口获取token即可，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
 
 ### 返回格式说明
 
@@ -148,8 +148,8 @@ Authorization: Bearer 获取到的token
 ### 接口地址 
 使用如下链接代替本文中出现的{api\_url}字样
 
-* 测试环境: https://dev-quickpay-api.iyuta.cn
-* 生产环境: https://quickpay-api.iyuta.cn
+* 测试环境: https://dev-xpay.redharex.com
+* 生产环境: https://xpay.redharex.com
 
 ### SDK(JAVA)下载
 目前提供部分接口的调用示例，包括如下接口:
@@ -173,7 +173,7 @@ mvn spring-boot:run
 ## 接口介绍 
 
 ### 1. 获取调用token接口
-通过本接口获取调用后续API所需的token。获取到的token为Quickpay用于验证调用方身份的JWT风格的token, 其有效时间为<b>4小时</b>。若需重新获取token，只需再次调用登录接口获取token即可，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
+通过本接口获取调用后续API所需的token。获取到的token为Xpay用于验证调用方身份的JWT风格的token, 其有效时间为<b>4小时</b>。若需重新获取token，只需再次调用登录接口获取token即可，token之间均为独立关系，获取新的token不会影响未过期的老token的使用。
 
 初次调用前请登录商户后台，从右上角图标进入商户配置页面生成AppId与AppKey (AppKey只会显示一次，请妥善保管，重新生成AppKey将造成旧AppKey无法使用)，获取方式如下图所示:
 
@@ -456,7 +456,7 @@ items类型的结构如下:
     "paymentOrderNo": "111906650000561884",
     "verDept": null,
     "payType": "2",
-    "initRequest": "https://vsp.allinpay.com/apiweb/qpay/payapplyagree[data:{agreeid=201902221443545123, amount=1, appid=00152305, currency=CNY, cusid=55152104816ZLVW, notifyurl=https://dev-quickpay-api.iyuta.cn/quickpay_notify/ALLINPAY/pengma, orderid=2019041000011, randomstr=1554989889665, subject=YYYYYYYY-口红, version=11}]",
+    "initRequest": "https://vsp.allinpay.com/apiweb/qpay/payapplyagree[data:{agreeid=201902221443545123, amount=1, appid=00152305, currency=CNY, cusid=55152104816ZLVW, notifyurl=https://dev-xpay.redharex.com/quickpay_notify/ALLINPAY/pengma, orderid=2019041000011, randomstr=1554989889665, subject=YYYYYYYY-口红, version=11}]",
     "initResponse": "{\"retcode\":\"SUCCESS\",\"retmsg\":null,\"randomstr\":\"917005450382\",\"sign\":\"B74D60CEB7141B3CB26FD4D7A5BD7B29\",\"orderid\":\"2019041000011\",\"trxstatus\":\"1999\",\"errmsg\":\"请输入短信验证码\",\"trxid\":null,\"chnltrxid\":null,\"fintime\":null,\"thpinfo\":\"{\\\"sign\\\":\\\"\\\",\\\"tphtrxcrtime\\\":\\\"\\\",\\\"tphtrxid\\\":0,\\\"trxflag\\\":\\\"trx\\\",\\\"trxsn\\\":\\\"\\\"}\"}",
     "paymentDatetime": "20190411213822",
     "customsPayCompanyName": "XX支付网络服务股份有限公司",
