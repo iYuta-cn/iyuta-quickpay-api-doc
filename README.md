@@ -1335,6 +1335,9 @@ items类型的结构如下:
 | 需申报的电子口岸代码 | customsCode | String | 否 | "HG016" | 若需申报则为必填, 参见附录[A.6](#a6-海关及电子口岸代码) |
 | 海关关区代码| customsAreaCode | String | 否 | "5130" | 若需申报且申报海关为广州海关时必填 |
 | 检验检疫机构代码 | customsJyOrg | String | 否 | "440009" |  若需申报且申报为广州海关时必填|
+| 订单货款 | orderGoodsAmount | Long | 否 | "3300" | 单位为分，非必填 |
+| 订单税款 | orderTaxAmount | Long | 否 | "50" | 单位为分，非必填 |
+| 订单运费 | orderShipmentFeeAmount | Long | 否 | "300" | 单位为分，非必填 |
 | 进口类型 | customsInType | String | 否 | "1" | 若需申报且申报天津电子口岸时为必填，1-保税进口，2-直邮进口 |
 | 商户订单编号 | mchtOrderNo | String| 是 | "F20190402123" | 只能包含英文字母、数字、短划线-和下划线_，最大长度30位，并请确保商户订单不重复 |
 | 订单下单时间 | orderDatetime | String | 否 | "2019-03-20 06:57:29" | 支持格式 yyyy-MM-dd HH:mm:ss |
