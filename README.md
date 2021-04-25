@@ -1556,6 +1556,38 @@ items类型的结构如下:
 }
 ~~~
 
+#### 6.6 申报失败订单重新获取申报状态
+
+本接口一般用于渠道已返回报关申报失败，但该渠道不允许线上进行订单重推，仅能通过人工联系运营人员进行订单重推，订单重推后，若希望继续通过系统走完后续流程（例如希望能通过系统查询到该订单报关成功，或希望系统发送报关成功异步通知），可调用本系统重新拉取最新的订单申报状态。
+
+* url: {api\_url}/order/requeryDeclareStatus?mchtOrderNo={mchtOrderNo}
+* method: GET
+* request: Query Params为商户订单号mchtOrderNo
+
+传入json对象如下:
+
+|字段名称|参数|类型|是否必填|例子|说明|
+|:--|:--|:--|:--|:--|:--|
+|商户订单号|mchtOrderNo| String |  是 | |
+
+* response:
+
+|字段名称|参数| 例子|说明|
+|:--|:--|:--|:--|
+|商户订单号| mchtOrderNo |  F20190402123  |  |
+
+~~~
+{
+    "success": true,
+    "errorMsg": null,
+    "errorCode": null,
+    "data": {
+        "稍后将重新获取订单申报状态"
+    }
+}
+~~~
+
+
 
 ---
 
